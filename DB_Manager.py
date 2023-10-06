@@ -6,7 +6,7 @@ class DBManager:
 
     def __init__(self):
         """Инициализация класса DBManager"""
-        self.conn = psycopg2.connect(host='localhost', database='coarse_work_5', user='postgres', password='Leha210900')
+        self.conn = psycopg2.connect(host='localhost', database='coarse_work_5', user='postgres', password='***')
 
     def get_companies_and_vacancies_count(self):
         """получает список всех компаний и количество вакансий у каждой компании."""
@@ -20,7 +20,8 @@ class DBManager:
         return companies_and_vacancies_list
 
     def get_all_vacancies(self):
-        """получает список всех вакансий с указанием названия компании, названия вакансии и зарплаты и ссылки на вакансию."""
+        """получает список всех вакансий с указанием названия компании, названия вакансии и зарплаты и ссылки на
+        вакансию. """
         all_vacancies = []
         with self.conn:
             with self.conn.cursor() as cur:

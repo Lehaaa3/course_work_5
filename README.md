@@ -1,28 +1,13 @@
 Проект по БД postgresql
 
 Подготовка:
-Перед запуском программы необходимо создать таблицы employers и vacancies с помощью следующего sql кода в pgAdmin 
+1. Перед запуском программы необходимо создать базу данных в pgAdmin и назвать ее coarse_work_5 (CREATE DATABASE coarse_work_5;)
 
-CREATE DATABASE coarse_work_5;
+2. Установить зависимости из файла pyproject.toml
 
-CREATE TABLE employers
-(
-    employer_id int PRIMARY KEY,
-    employer_name varchar(100) NOT NULL,
-    open_vacancies int
-);
-
-CREATE TABLE vacancies
-(
-	employer_id int REFERENCES employers(employer_id) NOT NULL,
-	vacancy_name text,
-	salary int,
-	city varchar (100),
-	url text
-)
-
-Также необходимо в переменной con в файле main.py функции main и в файле DBManager.py в классе DBManager 
-изменить значения параметров подключения под свои
+3. Также необходимо в переменной con в файле main.py функции main и в файле DBManager.py в классе DBManager 
+заменить звездочки на свой пароль в параметре password
+conn = psycopg2.connect(host='localhost', database='coarse_work_7', user='postgres', password='***')
 
 Использование:
 Необходимо запустить файл main.py, таблицы заполнятся данными о работодателях и вакансиях, 

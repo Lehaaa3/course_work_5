@@ -2,7 +2,7 @@ from Employer import Employer
 import csv
 
 
-class CSVFileHandler():
+class CSVFileHandler:
     """Класс для обработки CSV файлов"""
 
     def __init__(self, file_path: str):

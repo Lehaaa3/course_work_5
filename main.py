@@ -1,6 +1,6 @@
 import psycopg2
 import csv
-from CSVFileHandler import CSVFileHandler
+from CSV_File_Handler import CSVFileHandler
 from Employer import Employer
 from Vacancies import Vacancies
 
@@ -15,56 +15,30 @@ emp7 = Employer()
 emp8 = Employer()
 emp9 = Employer()
 
-emp_info = emp.get_employer_info('Бизнес-Азимут')
-emp1_info = emp1.get_employer_info('РусЭкспресс')
-emp2_info = emp2.get_employer_info('ООО АВ Софт')
-emp3_info = emp3.get_employer_info('ООО Космос Про Медиа')
-emp4_info = emp4.get_employer_info('ООО Компания Дилявер')
-emp5_info = emp5.get_employer_info('IT-People.ru')
-emp6_info = emp6.get_employer_info('ООО ЛингуаЛео')
-emp7_info = emp7.get_employer_info('Герцен')
-emp8_info = emp8.get_employer_info('ООО Варити+')
-emp9_info = emp9.get_employer_info('АО Рут Код')
+employers = [emp, emp1, emp3, emp4, emp5, emp6, emp7, emp8, emp9]
+companies = ['Бизнес-Азимут', 'РусЭкспресс', 'ООО АВ Софт', 'ООО Космос Про Медиа', 'ООО Компания Дилявер',
+             'IT-People.ru', 'ООО ЛингуаЛео', 'Герцен', 'ООО Варити+', 'АО Рут Код']
 
-emp_csv = CSVFileHandler("csv_employer.csv").add_employer(emp)
-emp1_csv = CSVFileHandler("csv_employer.csv").add_employer(emp1)
-emp2_csv = CSVFileHandler("csv_employer.csv").add_employer(emp2)
-emp3_csv = CSVFileHandler("csv_employer.csv").add_employer(emp3)
-emp4_csv = CSVFileHandler("csv_employer.csv").add_employer(emp4)
-emp5_csv = CSVFileHandler("csv_employer.csv").add_employer(emp5)
-emp6_csv = CSVFileHandler("csv_employer.csv").add_employer(emp6)
-emp7_csv = CSVFileHandler("csv_employer.csv").add_employer(emp7)
-emp8_csv = CSVFileHandler("csv_employer.csv").add_employer(emp8)
-emp9_csv = CSVFileHandler("csv_employer.csv").add_employer(emp9)
-
-emp_vacs = Vacancies().search_vacancies(emp.employer_id)
-emp1_vacs = Vacancies().search_vacancies(emp1.employer_id)
-emp2_vacs = Vacancies().search_vacancies(emp2.employer_id)
-emp3_vacs = Vacancies().search_vacancies(emp3.employer_id)
-emp4_vacs = Vacancies().search_vacancies(emp4.employer_id)
-emp5_vacs = Vacancies().search_vacancies(emp5.employer_id)
-emp6_vacs = Vacancies().search_vacancies(emp6.employer_id)
-emp7_vacs = Vacancies().search_vacancies(emp7.employer_id)
-emp8_vacs = Vacancies().search_vacancies(emp8.employer_id)
-emp9_vacs = Vacancies().search_vacancies(emp9.employer_id)
-
-emp_vacs_csv = CSVFileHandler("csv_vacancies.csv").add_vacancies(emp_vacs)
-emp1_vacs_csv = CSVFileHandler("csv_vacancies.csv").add_vacancies(emp1_vacs)
-emp2_vacs_csv = CSVFileHandler("csv_vacancies.csv").add_vacancies(emp2_vacs)
-emp3_vacs_csv = CSVFileHandler("csv_vacancies.csv").add_vacancies(emp3_vacs)
-emp4_vacs_csv = CSVFileHandler("csv_vacancies.csv").add_vacancies(emp4_vacs)
-emp5_vacs_csv = CSVFileHandler("csv_vacancies.csv").add_vacancies(emp5_vacs)
-emp6_vacs_csv = CSVFileHandler("csv_vacancies.csv").add_vacancies(emp6_vacs)
-emp7_vacs_csv = CSVFileHandler("csv_vacancies.csv").add_vacancies(emp7_vacs)
-emp8_vacs_csv = CSVFileHandler("csv_vacancies.csv").add_vacancies(emp8_vacs)
-emp9_vacs_csv = CSVFileHandler("csv_vacancies.csv").add_vacancies(emp9_vacs)
+company_number = 0
+for e in employers:
+    e.get_employer_info(companies[company_number])
+    company_number += 1
+    CSVFileHandler("csv_employer.csv").add_employer(e)
+    emp_vacs = Vacancies().search_vacancies(e.employer_id)
+    CSVFileHandler("csv_vacancies.csv").add_vacancies(emp_vacs)
 
 
 def main():
-    conn = psycopg2.connect(host='localhost', database='coarse_work_5', user='postgres', password='Leha210900')
+    conn = psycopg2.connect(host='localhost', database='coarse_work_5', user='postgres', password='***')
     try:
         with conn:
             with conn.cursor() as cur:
+                cur.execute("CREATE TABLE employers(employer_id int PRIMARY KEY, employer_name varchar(100) NOT NULL, "
+                            "open_vacancies int);")
+                cur.execute(
+                    "CREATE TABLE vacancies(employer_id int REFERENCES employers("
+                    "employer_id) NOT NULL, vacancy_name "
+                    "text, salary int, city varchar (100), url text)")
                 with open('csv_employer.csv') as f:
                     reader = csv.DictReader(f)
                     for row in reader:
